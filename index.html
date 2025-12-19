@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BR.Tech APP STORE</title><!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- Particles.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<style>
+    #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: #0f0f0f;
+        z-index: -1;
+    }
+
+    :root {
+        --primary-color: #1a1a1a;
+        --secondary-color: #2a2a2a;
+        --text-color: #f0f0f0;
+        --accent-gradient: linear-gradient(90deg, #4f46e5, #c026d3);
+        --shadow-color: rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .store-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .search-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    #searchInput {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        background-color: var(--secondary-color);
+        border: 1px solid #444;
+        border-radius: 50px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    #searchInput:focus {
+        outline: none;
+        border-color: #6a4de8;
+        box-shadow: 0 0 15px rgba(106, 77, 232, 0.3);
+    }
+
+    .search-container::before {
+        content: '🔍';
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.6;
+    }
+
+    #message-area {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #888;
+        margin-top: 4rem;
+    }
+
+    #app-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .app-card {
+        background-color: var(--secondary-color);
+        border-radius: 15px;
+        overflow: hidden;
+        text-align: center;
+        box-shadow: 0 8px 20px var(--shadow-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.5rem 1rem;
+    }
+
+    .app-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .app-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .app-logo {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 25px;
+        border: 3px solid #333;
+    }
+
+    .app-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .app-version {
+        font-size: 0.9rem;
+        color: #ccc;
+    }
+
+    .download-btn {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        background: var(--accent-gradient);
+        padding: 0.7rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .download-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(192, 38, 211, 0.4);
+    }
+
+    footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        margin-top: 3rem;
+        color: #777;
+        border-top: 1px solid #333;
+    }
+
+    @media (max-width: 600px) {
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .store-title {
+            font-size: 2rem;
+        }
+        .search-container {
+            max-width: 100%;
+        }
+        #app-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        .app-logo {
+            width: 80px;
+            height: 80px;
+        }
+        .app-name {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <header>
+            <h1 class="store-title"><center>🙏JAY BHIM🙏</center>
+                <br>BR.Tech APP STORE</h1>
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="Search for apps...">
+            </div>
+        </header><main>
+        <div id="message-area">Loading Apps...</div>
+        <div id="app-grid"></div>
+    </main>
+
+    <footer>
+        <p>© 2024 Your App Store. All rights reserved.</p>
+    </footer>
+</div>
+
+<script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyCaGnKALB3tUx077UiUYpkE1Dmj9avj1cE",
+  authDomain: "br-chat-eb866.firebaseapp.com",
+  databaseURL: "https://br-chat-eb866-default-rtdb.firebaseio.com",
+  projectId: "br-chat-eb866",
+  storageBucket: "br-chat-eb866.firebasestorage.app",
+  messagingSenderId: "629544535202",
+  appId: "1:629544535202:web:a8e2f387e0509a0f2543fb"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const appGrid = document.getElementById('app-grid');
+    const searchInput = document.getElementById('searchInput');
+    const messageArea = document.getElementById('message-area');
+    let allApps = [];
+
+    db.collection('apps').onSnapshot(snapshot => {
+        allApps = [];
+        if (snapshot.empty) {
+            messageArea.textContent = 'No apps available right now. Check back later!';
+            appGrid.innerHTML = '';
+            return;
+        }
+
+        snapshot.forEach(doc => {
+            const appData = doc.data();
+            allApps.push({
+                id: doc.id,
+                name: appData.name,
+                logoUrl: appData.logoUrl,
+                downloadLink: appData.downloadLink,
+                version: appData.version || 'v1.0'
+            });
+        });
+
+        messageArea.style.display = 'none';
+        displayApps(allApps);
+    }, error => {
+        console.error("Error fetching apps: ", error);
+        messageArea.textContent = 'Failed to load apps. Please check your connection or Firebase setup.';
+    });
+
+    function displayApps(appsToDisplay) {
+        appGrid.innerHTML = '';
+        if (appsToDisplay.length === 0) {
+            messageArea.textContent = 'No apps found for your search.';
+            messageArea.style.display = 'block';
+            return;
+        }
+
+        messageArea.style.display = 'none';
+
+        appsToDisplay.forEach(app => {
+            const appCardHTML = `
+                <div class="app-card" data-id="${app.id}">
+                    <div class="app-info">
+                        <img src="${app.logoUrl}" alt="${app.name} Logo" class="app-logo">
+                        <h3 class="app-name">${app.name}</h3>
+                        <p class="app-version">Version: ${app.version}</p>
+                    </div>
+                    <a href="${app.downloadLink}" class="download-btn" target="_blank" rel="noopener noreferrer">Download</a>
+                </div>
+            `;
+            appGrid.innerHTML += appCardHTML;
+        });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const filteredApps = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
+        displayApps(filteredApps);
+    });
+
+    particlesJS("particles-js", {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#00ff00" },
+            shape: { type: "circle" },
+            opacity: { value: 0.3 },
+            size: { value: 2 },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: "#00ff00",
+                opacity: 0.2,
+                width: 1
+            },
+            move: { enable: true, speed: 1 }
+        },
+        interactivity: {
+            events: {
+                onhover: { enable: true, mode: "repulse" }
+            }
+        },
+        retina_detect: true
+    });
+</script>
+
+</body>
+</html>
