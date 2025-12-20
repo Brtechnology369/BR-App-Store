@@ -223,9 +223,13 @@
         <div id="app-grid"></div>
     </main>
 
-    <footer>
-        <p>© 2024 Your App Store. All rights reserved.</p>
-    </footer>
+<footer style="text-align:center; padding:10px; font-size:14px; color:#777;">
+  © <span id="year"></span>(Developer by Mr.Roshan Wasnik) BR.Tech App Store. All rights reserved.
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </div>
 
 <script>
